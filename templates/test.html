@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <style>
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 1.5em;
+            background: #f8f9f9;
+        }
+
+        .galeria-image {
+            height: 100%;
+            width: 100%;
+            border-radius: 1em;
+            object-fit: cover;
+        }
+
+        .galeria-folder {
+            display: inline-block;
+            border-radius: 1em;
+            border: 1px solid black;
+        }
+
+        .galeria-folder-detail {
+            position: fixed; 
+            top: 0;
+            z-index: 1; 
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery">
+    </div>
+    <script>
+        let galleryData;
+
+        function addImage(appendTo, imageId) {
+            let img = document.createElement('img');
+            img.src = "https://drive.google.com/uc?id=" + imageId;
+            img.classList.add("galeria-image");
+            img.loading = "lazy";
+            appendTo.appendChild(img);
+        }
+
+        function openFolder(folderId) {
+            let folderFiles;
+            for (const file of galleryData) {
+                if (file.id == folderId) {
+                    folderFiles = file.images;
+                    break;
+                }
+            }
+            let folderView = document.createElement("div");
+            folderView.classList.add("galeria-folder-detail");
+            folderView.classList.add("gallery");
+            folderFiles.map(img => addImage(folderView, img.id));
+            document.querySelector(".gallery").style.display = "none";
+            document.querySelector("body").appendChild(folderView);
+        }
+
+        function closeFolder() {
+            document.querySelector(".galeria-folder-detail").remove();
+            document.querySelector(".gallery").style.display = "grid";
+        }
+
+        fetch("http://127.0.0.1:8000/galleries/401e1ba7-71c8-4a1e-ad1c-7a05f8e5cab6/json")
+        .then((response) => response.json())
+        .then((data) => {
+            galleryData = data.data;
+            galleryData.map(file => {
+                const gallery = document.querySelector(".gallery");
+                if (file.mimeType.includes("image")) {
+                    addImage(gallery, file.id);
+                } else if (file.mimeType == "application/vnd.google-apps.folder") {
+                    let folder = document.createElement("span");
+                    folder.classList.add("galeria-folder");
+                    folder.addEventListener("click", function() {openFolder(file.id)});
+
+                    addImage(folder, file.images[0].id);
+                    gallery.appendChild(folder);
+                } else {
+                    console.log(`File ${file.name} is of non valid type!`)
+                }
+            })
+        });
+    </script>
+    
+</body>
+</html>
