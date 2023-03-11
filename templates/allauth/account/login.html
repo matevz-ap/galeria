@@ -11,7 +11,10 @@
 
             {% url 'galleries:create_gallery' as success_url %}
             <a class="btn btn-light w-100"
-                href="{% provider_login_url "google" openid="https://www.google.com/accounts/o8/id" next=success_url %}">Sign in with Google</a>
+                href="{% provider_login_url "google" openid="https://www.google.com/accounts/o8/id" next=success_url %}">
+                <img src="{% static 'google_icon.png' %}" height="16" width="16" class="me-2">
+                Sign in with Google
+            </a>
         </form>
     </div>
 </div>
