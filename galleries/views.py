@@ -1,8 +1,13 @@
 from django.views.generic.detail import DetailView
+from django.views.generic import CreateView
 from django.http import JsonResponse
 
 from . import models
 from . import services
+
+class GalleryCreateView(CreateView):
+    model = models.Gallery
+    fields = ["user", "folder"]
 
 class GalleryView(DetailView):
     model = models.Gallery
