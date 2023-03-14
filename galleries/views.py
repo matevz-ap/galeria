@@ -9,6 +9,9 @@ class GalleryCreateView(CreateView):
     model = models.Gallery
     fields = ["user", "folder"]
 
+    def get_initial(self):
+        return {"user": self.request.user}
+
 class GalleryView(DetailView):
     model = models.Gallery
 
