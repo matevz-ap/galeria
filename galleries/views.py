@@ -14,7 +14,7 @@ class GalleryView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        files = services.get_files_from_folder(self.object.user_id)
+        files = services.get_files_from_folder(self.object.user_id, self.object.folder)
         context["files"] = files
         return context
     
